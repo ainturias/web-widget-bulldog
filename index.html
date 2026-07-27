@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BulldogTech — Prueba de Widgets</title>
+  <meta name="description" content="Página de demostración para probar el widget de chatbot de LYRA IA integrado en sitios web de clientes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- 1. Cargar Script del Chatbot de LYRA IA -->
+  <script src="https://telobuscoya.lyra-agent.tech/widgets/chatbot.js" defer></script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --purple-deep:   #3b0764;
+      --purple-dark:   #4c1d95;
+      --purple-mid:    #6d28d9;
+      --purple-main:   #7c3aed;
+      --purple-light:  #a78bfa;
+      --purple-glow:   #c4b5fd;
+      --bg-base:       #0a0118;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(167,139,250,0.15);
+      --border-hover:  rgba(167,139,250,0.40);
+      --text-primary:  #f1e9ff;
+      --text-secondary:#b8a6d9;
+      --text-muted:    #7c6a9c;
+      --radius-lg:     1.25rem;
+      --radius-xl:     2rem;
+      --transition:    0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float 12s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(124,58,237,0.35) 0%, transparent 70%);
+      top: -150px; left: -150px;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(109,40,217,0.30) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+      animation-delay: -4s;
+    }
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(167,139,250,0.20) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      animation-delay: -8s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-30px) scale(1.05); }
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(10, 1, 24, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--purple-main), var(--purple-light));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      box-shadow: 0 0 20px rgba(124,58,237,0.5);
+    }
+
+    .nav-logo-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--purple-glow), var(--text-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
+      background: rgba(124,58,237,0.2);
+      border: 1px solid rgba(124,58,237,0.4);
+      border-radius: 999px;
+      color: var(--purple-light);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem 6rem;
+      overflow: hidden;
+    }
+
+    .hero-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.15;
+      z-index: -1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1.1rem;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.35);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      margin-bottom: 1.8rem;
+      animation: fadeInDown 0.6s ease both;
+    }
+
+    .hero-eyebrow-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--purple-main);
+      box-shadow: 0 0 8px var(--purple-main);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.6; transform: scale(1.4); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 6vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      animation: fadeInDown 0.7s ease 0.1s both;
+    }
+
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, var(--purple-light) 0%, #e879f9 50%, var(--purple-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      max-width: 560px;
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.8rem;
+      animation: fadeInDown 0.7s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInDown 0.7s ease 0.3s both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: linear-gradient(135deg, var(--purple-main), #9333ea);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 30px rgba(124,58,237,0.5), 0 4px 15px rgba(0,0,0,0.3);
+      transition: var(--transition);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 50px rgba(124,58,237,0.7), 0 8px 25px rgba(0,0,0,0.35);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .stats-strip {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .stat-item {
+      flex: 1 1 200px;
+      padding: 2rem 2.5rem;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: var(--bg-card); }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--purple-light), var(--purple-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: var(--transition);
+      cursor: default;
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(124,58,237,0.15);
+    }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(147,51,234,0.15));
+      border: 1px solid rgba(124,58,237,0.3);
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 0 20px rgba(124,58,237,0.2);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .code-section {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    .code-card {
+      background: rgba(10,1,30,0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red    { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green  { background: #28c840; }
+
+    .code-filename {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .code-body {
+      padding: 1.8rem 2rem;
+      overflow-x: auto;
+    }
+
+    .code-body pre {
+      font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #d4c5f9;
+      white-space: pre;
+    }
+
+    .token-tag    { color: #a78bfa; }
+    .token-attr   { color: #f472b6; }
+    .token-string { color: #86efac; }
+    .token-comment{ color: #6b7280; font-style: italic; }
+
+    .demo-banner {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto 6rem;
+      padding: 0 2rem;
+    }
+
+    .demo-inner {
+      background: linear-gradient(135deg, rgba(76,29,149,0.4) 0%, rgba(124,58,237,0.2) 100%);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: var(--radius-xl);
+      padding: 3rem 2.5rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(167,139,250,0.6), transparent);
+    }
+
+    .demo-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    .demo-desc {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .demo-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--purple-light);
+    }
+
+    .demo-arrow-icon {
+      font-size: 1.5rem;
+      animation: bounce-right 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce-right {
+      0%, 100% { transform: translateX(0); }
+      50%       { transform: translateX(6px); }
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--purple-light);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.2rem; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat-item:last-child { border-bottom: none; }
+      .code-body pre { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+
+  <nav role="banner">
+    <a href="#" class="nav-logo" aria-label="BulldogTech inicio">
+      <div class="nav-logo-icon" aria-hidden="true">🐾</div>
+      <span class="nav-logo-text">BulldogTech</span>
+    </a>
+    <span class="nav-badge">Widget Sandbox</span>
+  </nav>
+
+  <section class="hero" aria-labelledby="hero-heading">
+    <img src="./hero_bg.jpg" alt="" class="hero-bg-img" aria-hidden="true" />
+
+    <div class="hero-eyebrow" aria-label="Estado: prueba en vivo">
+      <span class="hero-eyebrow-dot" aria-hidden="true"></span>
+      Prueba en vivo
+    </div>
+
+    <h1 id="hero-heading">
+      Integra <span class="gradient-text">LYRA IA</span><br />en cualquier sitio web
+    </h1>
+
+    <p class="hero-desc">
+      Este es un entorno de prueba para validar la integración del chatbot inteligente de LYRA directamente en la web de tus clientes.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#demo" class="btn-primary" id="cta-ver-demo">
+        ✨ Ver el chatbot
+      </a>
+      <a href="#codigo" class="btn-secondary" id="cta-ver-codigo">
+        &lt;/&gt; Ver el código
+      </a>
+    </div>
+  </section>
+
+  <div class="stats-strip" role="region" aria-label="Métricas del widget">
+    <div class="stat-item">
+      <div class="stat-number">2 líneas</div>
+      <div class="stat-label">de código para integrar</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">0 ms</div>
+      <div class="stat-label">impacto en carga inicial</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">personalizable</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">∞</div>
+      <div class="stat-label">conversaciones simultáneas</div>
+    </div>
+  </div>
+
+  <section class="section" aria-labelledby="features-heading">
+    <div class="section-header">
+      <p class="section-eyebrow">Características</p>
+      <h2 class="section-title" id="features-heading">¿Por qué LYRA IA?</h2>
+      <p class="section-subtitle">Un widget plug-and-play que transforma cualquier sitio en un asistente inteligente.</p>
+    </div>
+
+    <div class="cards-grid">
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🚀</div>
+        <h3>Integración instantánea</h3>
+        <p>Un solo &lt;script&gt; y una etiqueta HTML. Sin dependencias, sin configuración compleja.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🎨</div>
+        <h3>Totalmente personalizable</h3>
+        <p>Ajusta colores, nombre del bot y mensaje de bienvenida directamente desde los atributos HTML.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">⚡</div>
+        <h3>Carga diferida (defer)</h3>
+        <p>El script se carga de forma diferida para no bloquear el renderizado ni afectar el rendimiento.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🔒</div>
+        <h3>Seguro y confiable</h3>
+        <p>Conexión directa a la API de LYRA con comunicación segura sobre HTTPS en todo momento.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">💬</div>
+        <h3>Respuestas en tiempo real</h3>
+        <p>El asistente responde de forma fluida y natural, sin recargar la página del cliente.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">📱</div>
+        <h3>Responsive por defecto</h3>
+        <p>Funciona perfectamente en escritorio, tablet y móvil sin configuración adicional.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="code-section" id="codigo" aria-labelledby="code-heading">
+    <div class="section-header">
+      <p class="section-eyebrow">Implementación</p>
+      <h2 class="section-title" id="code-heading">El código que ves funcionando</h2>
+      <p class="section-subtitle">Estas dos líneas son todo lo que necesitas pegar en el HTML del cliente.</p>
+    </div>
+
+    <div class="code-card" role="figure" aria-label="Fragmento de código de integración">
+      <div class="code-header">
+        <div class="code-dots" aria-hidden="true">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <span class="code-filename">index.html</span>
+        <span style="font-size:0.75rem; color: var(--purple-light);">HTML</span>
+      </div>
+      <div class="code-body">
+        <pre><span class="token-comment">&lt;!-- 1. Cargar Script del Chatbot de LYRA IA --&gt;</span>
+<span class="token-tag">&lt;script</span> <span class="token-attr">src</span>=<span class="token-string">"https://telobuscoya.lyra-agent.tech/widgets/chatbot.js"</span> <span class="token-attr">defer</span><span class="token-tag">&gt;&lt;/script&gt;</span>
+
+<span class="token-comment">&lt;!-- 2. Ubicar la etiqueta donde deseas visualizar el Chatbot --&gt;</span>
+<span class="token-tag">&lt;custom-chatbot</span>
+  <span class="token-attr">api-url</span>=<span class="token-string">"https://telobuscoya.lyra-agent.tech"</span>
+  <span class="token-attr">bot-name</span>=<span class="token-string">"Lyra Assistant"</span>
+  <span class="token-attr">color-primary</span>=<span class="token-string">"#7c3aed"</span>
+  <span class="token-attr">welcome-message</span>=<span class="token-string">"&#xA1;Hola! &#x1F44B; Soy **Lyra**, tu asistente virtual premium."</span>
+<span class="token-tag">&gt;&lt;/custom-chatbot&gt;</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="demo-banner" id="demo">
+    <div class="demo-inner">
+      <h2 class="demo-title">🤖 El chatbot está activo</h2>
+      <p class="demo-desc">
+        Busca el ícono del asistente LYRA en la esquina inferior derecha de esta página e inicia una conversación.
+      </p>
+      <div class="demo-arrow">
+        <span>Encuéntralo ahí abajo a la derecha</span>
+        <span class="demo-arrow-icon" aria-hidden="true">➡️</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      Entorno de prueba · <strong>BulldogTech</strong> ·
+      Widget powered by <a href="https://telobuscoya.lyra-agent.tech" target="_blank" rel="noopener noreferrer">LYRA IA</a>
+    </p>
+  </footer>
+
+  <!-- 2. Ubicar la etiqueta donde deseas visualizar el Chatbot -->
+  <custom-chatbot
+    api-url="https://telobuscoya.lyra-agent.tech"
+    bot-name="Lyra Assistant"
+    color-primary="#7c3aed"
+    welcome-message="¡Hola! 👋 Soy **Lyra**, tu asistente virtual premium. ¿En qué te puedo asesorar o colaborar hoy?"
+  ></custom-chatbot>
+
+</body>
+</html>
