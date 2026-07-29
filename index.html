@@ -122,8 +122,9 @@
     /* ─── VIEWS ─── */
     .view {
       display: none;
-      min-height: 100vh;
-      padding-top: 62px; /* nav height */
+      height: 100vh;          /* ocupa exactamente el viewport */
+      padding-top: 62px;      /* nav height */
+      overflow: hidden;        /* no deja que nada crezca hacia fuera */
       position: relative;
       z-index: 1;
     }
@@ -138,12 +139,14 @@
     .inline-wrapper {
       width: 100%;
       max-width: 780px;
+      height: 100%;            /* ocupa todo el alto disponible en la vista */
       margin: 0 auto;
-      padding: 2rem 1.5rem 3rem;
+      padding: 1.2rem 1.5rem 1.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
+      overflow: hidden;        /* contiene el crecimiento interno */
     }
 
     .view-label {
@@ -187,16 +190,23 @@
     /* Chat container */
     .chat-shell {
       width: 100%;
+      flex: 1;                 /* absorbe todo el espacio vertical restante */
+      min-height: 0;           /* permite que flex shrink funcione correctamente */
       border: 1px solid var(--border-active);
       border-radius: 1.5rem;
-      overflow: hidden;
+      overflow: hidden;        /* el scroll queda dentro del widget */
       box-shadow: 0 0 60px rgba(124,58,237,.2), 0 20px 60px rgba(0,0,0,.4);
       background: var(--bg-2);
+      display: flex;
+      flex-direction: column;
     }
 
     .chat-shell custom-chatbot {
       display: block;
       width: 100%;
+      height: 100%;            /* el widget ocupa todo el shell */
+      flex: 1;
+      min-height: 0;
     }
 
     /* ─── VIEW 2: BUBBLE ─── */
